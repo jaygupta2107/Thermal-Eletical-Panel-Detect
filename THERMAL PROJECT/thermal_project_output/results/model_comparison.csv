@@ -1,0 +1,6 @@
+Algorithm,Accuracy,Precision,Recall,F1 Score
+Statistical (Z-Score),23.53,41.67,25.42,31.58
+K-Means Clustering,28.24,46.15,20.34,28.24
+Isolation Forest,16.47,26.92,11.86,16.47
+One-Class SVM,32.94,53.85,23.73,32.94
+Random Forest (Trained),100.0,100.0,100.0,100.0

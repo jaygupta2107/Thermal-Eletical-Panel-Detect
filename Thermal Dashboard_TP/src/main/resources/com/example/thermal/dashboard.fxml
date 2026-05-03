@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.image.*?>
+
+<VBox xmlns="http://javafx.com/javafx/11.0.1"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.example.thermal.DashboardController"
+      styleClass="root"
+      prefWidth="1200"
+      prefHeight="780">
+
+    <children>
+
+        <!-- ══ HEADER ══════════════════════════════════════════════════════ -->
+        <HBox spacing="16"
+              alignment="CENTER_LEFT"
+              styleClass="header-bar"
+              style="-fx-padding: 14 28 14 28; -fx-min-height: 62; -fx-max-height: 62;">
+            <children>
+
+                <VBox spacing="2">
+                    <Label text="THERMAL AI"                 styleClass="logo-title"/>
+                    <Label text="INDUSTRIAL MONITORING v2.0" styleClass="logo-subtitle"/>
+                </VBox>
+
+                <Region HBox.hgrow="ALWAYS"/>
+
+                <Label text="PANEL ID:" styleClass="label secondary"/>
+
+                <TextField fx:id="panelIdField"
+                           promptText="Enter panel ID"
+                           prefWidth="180"
+                           styleClass="text-field panel-id-field"/>
+
+                <Button fx:id="uploadButton"
+                        text="⬆ UPLOAD"
+                        onAction="#handleUploadImage"
+                        styleClass="action-btn primary"/>
+
+                <Button fx:id="processButton"
+                        text="▶ PROCESS"
+                        onAction="#handleProcessImage"
+                        disable="true"
+                        styleClass="action-btn primary"/>
+
+            </children>
+        </HBox>
+
+
+        <!-- ══ MAIN ROW: Original | Processed | Metrics ════════════════════ -->
+        <HBox spacing="16"
+              style="-fx-padding: 16 28 8 28;"
+              prefHeight="340"
+              minHeight="300"
+              maxHeight="360">
+            <children>
+
+                <!-- ORIGINAL IMAGE -->
+                <VBox spacing="8"
+                      HBox.hgrow="ALWAYS"
+                      styleClass="premium-card"
+                      alignment="TOP_CENTER">
+
+                    <Label text="ORIGINAL IMAGE"
+                           styleClass="section-title"
+                           maxWidth="Infinity"/>
+
+                    <ImageView fx:id="originalImageView"
+                               fitWidth="340"
+                               fitHeight="220"
+                               preserveRatio="true"
+                               styleClass="image-frame"/>
+
+                    <Label text="Upload thermal image to begin"
+                           styleClass="placeholder-text"
+                           alignment="CENTER"
+                           maxWidth="Infinity"/>
+                </VBox>
+
+
+                <!-- PROCESSED RESULT -->
+                <VBox spacing="8"
+                      HBox.hgrow="ALWAYS"
+                      styleClass="premium-card"
+                      alignment="TOP_CENTER">
+
+                    <Label text="PROCESSED RESULT"
+                           styleClass="section-title"
+                           maxWidth="Infinity"/>
+
+                    <ImageView fx:id="resultImageView"
+                               fitWidth="340"
+                               fitHeight="220"
+                               preserveRatio="true"
+                               styleClass="image-frame"/>
+
+                    <Label fx:id="resultPlaceholder"
+                           text="Processed Heatmap Will Appear Here"
+                           styleClass="placeholder-text"
+                           alignment="CENTER"
+                           maxWidth="Infinity"/>
+
+                    <ProgressIndicator fx:id="loadingSpinner"
+                                       visible="false"
+                                       prefWidth="28"
+                                       prefHeight="28"/>
+                </VBox>
+
+
+                <!-- ANALYSIS METRICS -->
+                <VBox spacing="8"
+                      prefWidth="240"
+                      minWidth="220"
+                      maxWidth="260"
+                      styleClass="premium-card">
+
+                    <Label text="ANALYSIS METRICS"
+                           styleClass="section-title"
+                           maxWidth="Infinity"/>
+
+                    <Separator/>
+
+                    <Label fx:id="filenameLabel"
+                           text="File: No file selected"
+                           styleClass="metric-item"
+                           wrapText="true"
+                           maxWidth="Infinity"/>
+
+                    <Label fx:id="maxTempLabel"
+                           text="🌡 Max Temp: —"
+                           styleClass="metric-item"
+                           maxWidth="Infinity"/>
+
+                    <Label fx:id="avgTempLabel"
+                           text="📊 Avg Temp: —"
+                           styleClass="metric-item"
+                           maxWidth="Infinity"/>
+
+                    <Label fx:id="hotspotIntensityLabel"
+                           text="🚨 Faults: —"
+                           styleClass="metric-item"
+                           maxWidth="Infinity"/>
+
+                    <Label fx:id="thermalGradientLabel"
+                           text="🔥 Hotspots: —"
+                           styleClass="metric-item"
+                           maxWidth="Infinity"/>
+
+                    <Label fx:id="stdTemperatureLabel"
+                           text="📈 Std Dev: —"
+                           styleClass="metric-item"
+                           maxWidth="Infinity"/>
+
+                    <Region VBox.vgrow="ALWAYS"/>
+
+                    <Label fx:id="severityLabel"
+                           text="STATUS: PENDING"
+                           styleClass="metric-item severity-badge"
+                           maxWidth="Infinity"
+                           alignment="CENTER"/>
+                </VBox>
+
+            </children>
+        </HBox>
+
+
+        <!-- ══ PROCESSING HISTORY ══════════════════════════════════════════ -->
+        <VBox spacing="8"
+              VBox.vgrow="ALWAYS"
+              style="-fx-padding: 0 28 20 28;">
+
+            <VBox spacing="8"
+                  VBox.vgrow="ALWAYS"
+                  styleClass="premium-card">
+
+                <HBox alignment="CENTER_LEFT" spacing="8">
+                    <Label text="PROCESSING HISTORY" styleClass="section-title"/>
+                    <Region HBox.hgrow="ALWAYS"/>
+                    <Label text="RECORDS: " styleClass="label secondary"/>
+                    <Label fx:id="recordCountLabel" text="0" styleClass="label secondary"/>
+                </HBox>
+
+                <Separator/>
+
+                <TableView fx:id="historyTable" VBox.vgrow="ALWAYS">
+                    <columns>
+                        <TableColumn fx:id="panelIdColumn"     text="PANEL ID"   prefWidth="110"/>
+                        <TableColumn fx:id="filenameColumn"    text="FILENAME"   prefWidth="140"/>
+                        <TableColumn fx:id="temperatureColumn" text="MAX TEMP"   prefWidth="110"/>
+                        <TableColumn fx:id="statusColumn"      text="STATUS"     prefWidth="90"/>
+                        <TableColumn fx:id="timeColumn"        text="TIMESTAMP"  prefWidth="160"/>
+                    </columns>
+                    <columnResizePolicy>
+                        <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
+                    </columnResizePolicy>
+                </TableView>
+
+                <HBox spacing="12" alignment="CENTER_RIGHT">
+                    <Button fx:id="clearLogButton"
+                            text="CLEAR"
+                            onAction="#handleClearLog"
+                            styleClass="action-btn secondary"/>
+                    <Button fx:id="exportButton"
+                            text="EXPORT CSV"
+                            onAction="#handleExportCSV"
+                            styleClass="action-btn primary"/>
+                </HBox>
+
+            </VBox>
+        </VBox>
+
+    </children>
+</VBox>
